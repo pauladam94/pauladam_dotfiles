@@ -9,6 +9,7 @@ It is not:
 - Place to add every plugin that could ever be useful
 
                                                                 *kickstart-is*
+
 It is:
 - Somewhere that has a good start for the most common "IDE" type features:
     - autocompletion
