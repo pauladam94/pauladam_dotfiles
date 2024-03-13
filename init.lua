@@ -822,7 +822,7 @@ require('lazy').setup {
 
       ---@diagnostic disable-next-line: missing-fields
       require('nvim-treesitter.configs').setup {
-        ensure_installed = { 'bash', 'c', 'html', 'lua', 'markdown', 'vim', 'vimdoc' },
+        ensure_installed = { 'bash', 'c', 'html', 'lua', 'markdown', 'markdown_inline', 'vim', 'vimdoc' },
         -- Autoinstall languages that are not installed
         auto_install = true,
         highlight = { enable = true },
@@ -960,7 +960,7 @@ require('lazy').setup {
         --   end
         -- end
         -- return tostring(os.time()) .. "-" .. suffix
-        return tostring(os.time())
+        return ""
       end,
 
       -- Optional, customize how note file names are generated given the ID, target directory, and title.
@@ -978,7 +978,10 @@ require('lazy').setup {
       --  * "prepend_note_path", e.g. '[[foo-bar.md|Foo Bar]]'
       --  * "use_path_only", e.g. '[[foo-bar.md]]'
       -- Or you can set it to a function that takes a table of options and returns a string, like this:
+      wiki_link = "use_alias_only",
+      -- TODO: "use_alias_only",
       wiki_link_func = function(opts)
+        -- return require("obsidian.util").wiki_link_id_prefix(opts)
         return require("obsidian.util").wiki_link_id_prefix(opts)
       end,
 
@@ -1097,7 +1100,7 @@ require('lazy').setup {
       -- Optional, configure additional syntax highlighting / extmarks.
       -- This requires you have `conceallevel` set to 1 or 2. See `:help conceallevel` for more details.
       ui = {
-        enable = false,         -- set to false to disable all additional syntax features
+        enable = true,         -- set to false to disable all additional syntax features
         update_debounce = 200, -- update delay after a text change (in milliseconds)
         -- Define how various check-boxes are displayed
         checkboxes = {
@@ -1245,21 +1248,23 @@ require('lazy').setup {
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 
--- NOTE: My option
+-- NOTE: My options
+
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.scrolloff = 14
---[[ vim.opt.inccommand = true  ]]
+vim.opt.conceallevel = 1 -- for ui in obsidian.nvim
+-- vim.opt.inccommand = true
+vim.opt.linebreak = true
 
 -- NOTE: My commands and shortcut
 
--- Try to have LSP all the time (this works)
+-- LSP test in all modes (worked)
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
   -- delay update diagnostics
   update_in_insert = true,
 })
-
 -- Custom Command
 -- Create a command `:Format` local to the LSP buffer
 vim.api.nvim_create_user_command('Format', function(_)
@@ -1271,4 +1276,13 @@ vim.api.nvim_create_user_command('Config', 'edit /Users/pauladam/.config/nvim/in
 vim.keymap.set('n', '<leader>tu', vim.cmd.UndotreeToggle, { desc = '[t]ree [u]ndo' })
 vim.keymap.set('n', '<leader>f', vim.cmd.Format, { desc = '[f]ormat file' })
 vim.keymap.set('n', '<leader>tf', vim.cmd.NvimTreeToggle, { desc = '[t]ree [f]ile' })
---[[ vim.keymap.set('n', '<leader>ec', vim.cmd.Config, { desc = '[e]dit [c]onfig' }) ]]
+-- vim.keymap.set('n', '<leader>ec', vim.cmd.Config, { desc = '[e]dit [c]onfig' })
+-- visual j and k
+vim.keymap.set({ 'n', 'v' }, 'j', 'gj')
+vim.keymap.set({ 'n', 'v' }, 'k', 'gk')
+vim.keymap.set({ 'n', 'v' }, '<Up>', 'gk')
+vim.keymap.set({ 'n', 'v' }, '<Down>', 'gj')
+
+-- d, x cut to different register
+-- vim.keymap.set('n', 'd', '[4d]<Del>')
+-- vim.keyap.set('n', 'x', '\"4x')
