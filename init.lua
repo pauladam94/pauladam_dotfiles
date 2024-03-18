@@ -96,10 +96,10 @@ vim.g.maplocalleader = ' '
 --  For more options, you can see `:help option-list`
 
 -- Make line numbers default
-vim.opt.number = true
+vim.opt.number = false
 -- You can also add relative line numbers, for help with jumping.
 --  Experiment for yourself to see if you like it!
-vim.opt.relativenumber = true
+-- vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -304,17 +304,17 @@ require('lazy').setup {
     dependencies = {
       'nvim-lua/plenary.nvim',
       { -- If encountering errors, see telescope-fzf-native README for install instructions
-        'nvim-telescope/telescope-fzf-native.nvim',
+        -- 'nvim-telescope/telescope-fzf-native.nvim',
 
         -- `build` is used to run some command when the plugin is installed/updated.
         -- This is only run then, not every time Neovim starts up.
-        build = 'make',
+        -- build = 'make',
 
         -- `cond` is a condition used to determine whether this plugin should be
         -- installed and loaded.
-        cond = function()
-          return vim.fn.executable 'make' == 1
-        end,
+        -- cond = function()
+          -- return vim.fn.executable 'make' == 1
+        -- end,
       },
       { 'nvim-telescope/telescope-ui-select.nvim' },
 
@@ -829,7 +829,7 @@ require('lazy').setup {
         indent = { enable = true },
       }
 
-      -- There are additional nvim-treesitter modules that you can use to interact
+      -- There are aditional nvim-treesitter modules that you can use to interact
       -- with nvim-treesitter. You should go explore a few and see what interests you:
       --
       --    - Incremental selection: Included, see :help nvim-treesitter-incremental-selection-mod
@@ -1026,13 +1026,13 @@ require('lazy').setup {
       end,
 
       -- Optional, for templates (see below).
-      templates = {
-        subdir = "templates",
-        date_format = "%Y-%m-%d",
-        time_format = "%H:%M",
-        -- A map for custom variables, the key should be the variable and the value a function
-        substitutions = {},
-      },
+      -- templates = {
+      --   subdir = "~/Documents/",
+      --   date_format = "%Y-%m-%d",
+      --   time_format = "%H:%M",
+      --   -- A map for custom variables, the key should be the variable and the value a function
+      --   substitutions = {},
+      -- },
 
       -- Optional, by default when you use `:ObsidianFollowLink` on a link to an external
       -- URL it will be ignored but you can customize this behavior here.
@@ -1253,7 +1253,7 @@ require('lazy').setup {
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
-vim.opt.scrolloff = 14
+vim.opt.scrolloff = 7
 vim.opt.conceallevel = 1 -- for ui in obsidian.nvim
 -- vim.opt.inccommand = true
 vim.opt.linebreak = true
@@ -1273,16 +1273,19 @@ end, { desc = 'Format current buffer with LSP' })
 vim.api.nvim_create_user_command('Config', 'edit /Users/pauladam/.config/nvim/init.lua', {})
 
 -- Personnal Shortcut
-vim.keymap.set('n', '<leader>tu', vim.cmd.UndotreeToggle, { desc = '[t]ree [u]ndo' })
-vim.keymap.set('n', '<leader>f', vim.cmd.Format, { desc = '[f]ormat file' })
-vim.keymap.set('n', '<leader>tf', vim.cmd.NvimTreeToggle, { desc = '[t]ree [f]ile' })
+vim.keymap.set('n', 'tu', vim.cmd.UndotreeToggle, { desc = '[T]ree [U]ndo' })
+vim.keymap.set('n', '<leader>f', vim.cmd.Format, { desc = '[F]ormat file' })
+vim.keymap.set('n', 'tf', vim.cmd.NvimTreeToggle, { desc = '[T]ree [F]ile' })
 -- vim.keymap.set('n', '<leader>ec', vim.cmd.Config, { desc = '[e]dit [c]onfig' })
 -- visual j and k
 vim.keymap.set({ 'n', 'v' }, 'j', 'gj')
 vim.keymap.set({ 'n', 'v' }, 'k', 'gk')
 vim.keymap.set({ 'n', 'v' }, '<Up>', 'gk')
 vim.keymap.set({ 'n', 'v' }, '<Down>', 'gj')
+-- vim.keymap.set({'i'}, '<Up>', '<Esc>gka')
+-- vim.keymap.set({'i'}, '<Down>', '<Esc>gja')
 
 -- d, x cut to different register
+-- CHANGE register that 'd' and 'x' uses.
 -- vim.keymap.set('n', 'd', '[4d]<Del>')
 -- vim.keyap.set('n', 'x', '\"4x')
