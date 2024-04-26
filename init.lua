@@ -90,7 +90,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -542,26 +542,25 @@ require('lazy').setup({
         --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
         local servers = {
           clangd = {},
-          -- pyright = {},
           rust_analyzer = {
-            -- setting = {
-            --   ["rust-analyzer"] = {
-            --     imports = {
-            --       granularity = {
-            --         group = "module",
-            --       },
-            --       prefix = "self",
-            --     },
-            --     cargo = {
-            --       buildScripts = {
-            --         enable = true,
-            --       },
-            --     },
-            --     procMacro = {
-            --       enable = true
-            --     },
-            --   }
-            -- }
+            setting = {
+              ["rust-analyzer"] = {
+                imports = {
+                  granularity = {
+                    group = "module",
+                  },
+                  prefix = "self",
+                },
+                cargo = {
+                  buildScripts = {
+                    enable = true,
+                  },
+                },
+                procMacro = {
+                  enable = true
+                },
+              }
+            }
           },
           -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
           --
@@ -574,36 +573,26 @@ require('lazy').setup({
           typst_lsp = {
             cmd = {
               '/Users/pauladam/.local/share/nvim/mason/bin/tinymist',
-              -- 'compile',
-              -- '--root',
-              -- '~/PaulJR/'
             },
-            rootPath = "/Users/pauladam//PaulJR/",
-            rootDirectory = '/Users/pauladam//PaulJR/',
-            -- rootPath = '~/PaulJR/'
-            single_file_support = false,
+            single_file_support = true,
+            root_dir = function()
+              return vim.fn.getcwd()
+            end,
+            settings = {
+              experimentalFormatterMode = "on",
+            }
           },
           lua_ls = {
-            -- cmd = {...},
-            -- filetypes = { ...},
-            -- capabilities = {},
             settings = {
               Lua = {
+                diagnostics = { globals = { 'vim' } },
                 completion = {
                   callSnippet = "Replace",
                 },
-                -- you can toggle below to ignore lua_ls's noisy `missing-fields` warnings
-                -- diagnostics = { disable = { 'missing-fields' } },
               },
             },
           },
-          tinymist = {
-            setting = {
-              rootPath = "~/PaulJR/",
-              exportPdf = "onType",
-              outputPath = "/Users/pauladam/Downloads/"
-            }
-          }
+          tinymist = {}
         }
 
         -- ensure the servers and tools above are installed
@@ -824,7 +813,7 @@ require('lazy').setup({
       'nvim-treesitter/nvim-treesitter',
       build = ':TSUpdate',
       opts = {
-        ensure_installed = { 'bash', 'c', 'html', 'lua', 'markdown', 'vim', 'vimdoc', 'typst' },
+        ensure_installed = { 'bash', 'c', 'python', 'html', 'lua', 'markdown', 'vim', 'vimdoc', 'typst' },
         -- Autoinstall languages that are not installed
         auto_install = true,
         highlight = {
@@ -863,13 +852,12 @@ require('lazy').setup({
     -- require 'kickstart.plugins.debug',
     -- require 'kickstart.plugins.indent_line',
     -- require 'kickstart.plugins.lint',
-
     -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
     --    This is the easiest way to modularize your config.
     --
     --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
     --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
-    -- { import = 'custom.plugins' },
+    { import = 'custom.plugins' },
     -- NOTE: My Plugins
     -- {
     --   "epwalsh/obsidian.nvim",
@@ -1203,7 +1191,9 @@ require('lazy').setup({
     --     vim.keymap.set("n", "<C-S-P>", function() harpoon:list():prev() end)
     --     vim.keymap.set("n", "<C-S-N>", function() harpoon:list():next() end)
     --   end
-    -- },
+    --
+    -- 'Myriad-Dreamin/tinymist',
+    -- require 'custom.plugins.tinymist',
     {
       "kdheepak/lazygit.nvim",
       cmd = {
@@ -1218,6 +1208,7 @@ require('lazy').setup({
         "nvim-lua/plenary.nvim",
       },
     },
+    -- 'Myriad-Dreamin/tinymist',
     'mbbill/undotree',
     'bellinitte/uxntal.vim',
     'Pocco81/auto-save.nvim',
@@ -1250,8 +1241,21 @@ require('lazy').setup({
       version = '0.1.*',
       build = function() require 'typst-preview'.update() end,
     },
+    {
+      "S1M0N38/love2d.nvim",
+      cmd = "LoveRun",
+      opts = {},
+    },
+    {
+      'saecki/crates.nvim',
+      tag = 'stable',
+      config = function()
+        require('crates').setup()
+      end,
+    },
     --   'windwp/nvim-autopairs',
     --   'mrcjkb/rustaceanvim',
+    -- TODO: test rooter
   },
   {
     ui = {
@@ -1275,13 +1279,10 @@ require('lazy').setup({
     },
   })
 
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
-
 -- NOTE: My options
-
+vim.opt.colorcolumn = "80"
 vim.opt.tabstop = 4
-vim.opt.shiftwidth = 4
+vim.opt.shiftwidth = 8
 vim.opt.expandtab = true
 vim.opt.scrolloff = 7
 vim.opt.conceallevel = 1 -- for ui in obsidian.nvim
@@ -1296,16 +1297,28 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagn
   -- delay update diagnostics
   update_in_insert = true,
 })
+
+vim.diagnostic.config { update_in_insert = true }
+
 -- Custom Command
+-- FORMAT
 -- Create a command `:Format` local to the LSP buffer
 vim.api.nvim_create_user_command('Format', function(_)
+  -- if vim.bo.filetype == "typst" then
+  --   os.execute('tysptfmt -o' .. vim.fn.expand('%:p'))
+  -- else
   vim.lsp.buf.format()
+  -- end
 end, { desc = 'Format current buffer with LSP' })
+-- format typst file
+vim.keymap.set('n', '<leader>f', vim.cmd.Format, { desc = '[F]ormat file' })
+
+-- TODO use the config argument (that gives the config path)
 vim.api.nvim_create_user_command('Config', 'edit /Users/pauladam/.config/nvim/init.lua', {})
 
 -- Personnal Shortcut
 vim.keymap.set('n', '<leader>tu', vim.cmd.UndotreeToggle, { desc = '[T]ree [U]ndo' })
-vim.keymap.set('n', '<leader>f', vim.cmd.Format, { desc = '[F]ormat file' })
+
 vim.keymap.set('n', '<leader>tf', vim.cmd.NvimTreeToggle, { desc = '[T]ree [F]ile' })
 -- vim.keymap.set('n', '<leader>ec', vim.cmd.Config, { desc = '[e]dit [c]onfig' })
 -- visual j and k
@@ -1315,30 +1328,7 @@ vim.keymap.set({ 'n', 'v' }, '<Up>', 'gk')
 vim.keymap.set({ 'n', 'v' }, '<Down>', 'gj')
 -- vim.keymap.set({'i'}, '<Up>', '<Esc>gka')
 -- vim.keymap.set({'i'}, '<Down>', '<Esc>gja')
-
+vim.keymap.set('n', 'x', '"0x')
+vim.keymap.set('n', '<C-a>', 'gg0vG$y<C-O>')
 -- paste only something that was paste
 -- vim.keymap.set('n', 'p', '"0p')
-
--- vim.api.nvim_create_autocmd(
---     {
---         "BufNewFile",
---         "BufRead",
---     },
---     {
---         pattern = "*.typ",
---         callback = function()
---             local buf = vim.api.nvim_get_current_buf()
---             vim.api.nvim_buf_set_option(buf, "filetype", "typst")
---         end
---     }
--- )
---
-vim.api.nvim_create_user_command('TinymistLSPLauch',
-  function(_)
-    vim.lsp.start({
-      name = 'tinymist',
-      cmd = { '/Users/pauladam/.local/share/nvim/mason/bin/tinymist' },
-      root_dir = '~/PaulJR/'
-      -- root_dir = vim.fs.dirname(vim.fs.find({'setup.py', 'pyproject.toml'}, { upward = true })[1]),
-    })
-  end, { desc = 'Lauch tinymist' })
