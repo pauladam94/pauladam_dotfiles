@@ -90,7 +90,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed
-vim.g.have_nerd_font = true
+vim.g.have_nerd_font = false
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -1280,15 +1280,16 @@ require('lazy').setup({
   })
 
 -- NOTE: My options
-vim.opt.colorcolumn = "80"
+vim.opt.colorcolumn = "81"
 vim.opt.tabstop = 4
-vim.opt.shiftwidth = 8
+vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.scrolloff = 7
 vim.opt.conceallevel = 1 -- for ui in obsidian.nvim
 -- vim.opt.inccommand = true
 vim.opt.linebreak = true
 vim.opt.whichwrap = "<,>,[,]"
+vim.opt.textwidth = 80
 
 -- NOTE: My commands and shortcut
 
@@ -1304,17 +1305,17 @@ vim.diagnostic.config { update_in_insert = true }
 -- FORMAT
 -- Create a command `:Format` local to the LSP buffer
 vim.api.nvim_create_user_command('Format', function(_)
-  -- if vim.bo.filetype == "typst" then
-  --   os.execute('tysptfmt -o' .. vim.fn.expand('%:p'))
-  -- else
-  vim.lsp.buf.format()
-  -- end
+  if vim.bo.filetype == "typst" then
+    vim.cmd(":!typstfmt %<enter>")
+  else
+    vim.lsp.buf.format()
+  end
 end, { desc = 'Format current buffer with LSP' })
 -- format typst file
 vim.keymap.set('n', '<leader>f', vim.cmd.Format, { desc = '[F]ormat file' })
 
 -- TODO use the config argument (that gives the config path)
-vim.api.nvim_create_user_command('Config', 'edit /Users/pauladam/.config/nvim/init.lua', {})
+vim.api.nvim_create_user_command('Config', 'edit ~/.config/nvim/init.lua', {})
 
 -- Personnal Shortcut
 vim.keymap.set('n', '<leader>tu', vim.cmd.UndotreeToggle, { desc = '[T]ree [U]ndo' })
@@ -1329,6 +1330,6 @@ vim.keymap.set({ 'n', 'v' }, '<Down>', 'gj')
 -- vim.keymap.set({'i'}, '<Up>', '<Esc>gka')
 -- vim.keymap.set({'i'}, '<Down>', '<Esc>gja')
 vim.keymap.set('n', 'x', '"0x')
-vim.keymap.set('n', '<C-a>', 'gg0vG$y<C-O>')
+vim.keymap.set('n', '<leader>a', 'gg0vG$y<C-O>', { desc = 'Yank [A]ll Buffer' })
 -- paste only something that was paste
 -- vim.keymap.set('n', 'p', '"0p')
