@@ -1237,8 +1237,8 @@ require('lazy').setup({
     },
     {
       'chomosuke/typst-preview.nvim',
-      ft = 'typst',
-      version = '0.1.*',
+      lazy = false, -- or ft = 'typst'
+      version = '0.3.*',
       build = function() require 'typst-preview'.update() end,
     },
     {
@@ -1306,7 +1306,7 @@ vim.diagnostic.config { update_in_insert = true }
 -- Create a command `:Format` local to the LSP buffer
 vim.api.nvim_create_user_command('Format', function(_)
   if vim.bo.filetype == "typst" then
-    vim.cmd(":!typstfmt %<enter>")
+    vim.cmd(":!typstfmt %")
   else
     vim.lsp.buf.format()
   end
@@ -1316,6 +1316,12 @@ vim.keymap.set('n', '<leader>f', vim.cmd.Format, { desc = '[F]ormat file' })
 
 -- TODO use the config argument (that gives the config path)
 vim.api.nvim_create_user_command('Config', 'edit ~/.config/nvim/init.lua', {})
+
+-- love2D shortcut
+vim.api.nvim_create_user_command('Love2DRun', function(_)
+  print(vim.loop.cwd())
+  os.execute('love ' .. vim.loop.cwd())
+end, { desc = 'Run Love2D Project' })
 
 -- Personnal Shortcut
 vim.keymap.set('n', '<leader>tu', vim.cmd.UndotreeToggle, { desc = '[T]ree [U]ndo' })
@@ -1330,6 +1336,6 @@ vim.keymap.set({ 'n', 'v' }, '<Down>', 'gj')
 -- vim.keymap.set({'i'}, '<Up>', '<Esc>gka')
 -- vim.keymap.set({'i'}, '<Down>', '<Esc>gja')
 vim.keymap.set('n', 'x', '"0x')
-vim.keymap.set('n', '<leader>a', 'gg0vG$y<C-O>', { desc = 'Yank [A]ll Buffer' })
+vim.keymap.set('n', '<leader>a', 'gg0vG$y<C-O>', { desc = 'Yank [A]ll File' })
 -- paste only something that was paste
 -- vim.keymap.set('n', 'p', '"0p')
