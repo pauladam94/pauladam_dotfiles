@@ -1,162 +1,39 @@
---[[
-
-=====================================================================
-==================== READ THIS BEFORE CONTINUING ====================
-=====================================================================
-========                                    .-----.          ========
-========         .----------------------.   | === |          ========
-========         |.-""""""""""""""""""-.|   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||   KICKSTART.NVIM   ||   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||                    ||   |-----|          ========
-========         ||:Tutor              ||   |:::::|          ========
-========         |'-..................-'|   |____o|          ========
-========         `"")----------------(""`   ___________      ========
-========        /::::::::::|  |::::::::::\  \ no mouse \     ========
-========       /:::========|  |==hjkl==:::\  \ required \    ========
-========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
-========                                                     ========
-=====================================================================
-=====================================================================
-
-What is Kickstart?
-
-  Kickstart.nvim is *not* a distribution.
-
-  Kickstart.nvim is a starting point for your own configuration.
-    The goal is that you can read every line of code, top-to-bottom, understand
-    what your configuration is doing, and modify it to suit your needs.
-
-    Once you've done that, you can start exploring, configuring and tinkering to
-    make Neovim your own! That might mean leaving Kickstart just the way it is for a while
-    or immediately breaking it into modular pieces. It's up to you!
-
-    If you don't know anything about Lua, I recommend taking some time to read through
-    a guide. One possible example which will only take 10-15 minutes:
-      - https://learnxinyminutes.com/docs/lua/
-
-    After understanding a bit more about Lua, you can use `:help lua-guide` as a
-    reference for how Neovim integrates Lua.
-    - :help lua-guide
-    - (or HTML version): https://neovim.io/doc/user/lua-guide.html
-Kickstart Guide:
-
-  TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
-
-    If you don't know what this means, type the following:
-      - <escape key>
-      - :
-      - Tutor
-      - <enter key>
-
-    (If you already know the Neovim basics, you can skip this step.)
-
-  Once you've completed that, you can continue working through **AND READING** the rest
-  of the kickstart init.lua.
-
-  Next, run AND READ `:help`.
-    This will open up a help window with some basic information
-    about reading, navigating and searching the builtin help documentation.
-
-    This should be the first place you go to look when you're stuck or confused
-    with something. It's one of my favorite Neovim features.
-
-    MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
-    which is very useful when you're not exactly sure of what you're looking for.
-
-  I have left several `:help X` comments throughout the init.lua
-    These are hints about where to find more information about the relevant settings,
-    plugins or Neovim features used in Kickstart.
-
-   NOTE: Look for lines like this
-
-    Throughout the file. These are for you, the reader, to help you understand what is happening.
-    Feel free to delete them once you know what you're doing, but they should serve as a guide
-    for when you are first encountering a few different constructs in your Neovim config.
-
-If you experience any errors while trying to install kickstart, run `:checkhealth` for more info.
-
-I hope you enjoy your Neovim journey,
-- TJ
-
-P.S. You can delete this when you're done too. It's your config now! :)
---]]
-
--- Set <space> as the leader key
--- See `:help mapleader`
---  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
-
--- Set to true if you have a Nerd Font installed
 vim.g.have_nerd_font = false
-
--- [[ Setting options ]]
--- See `:help vim.opt`
--- NOTE: You can change these options as you wish!
---  For more options, you can see `:help option-list`
-
--- Make line numbers default
-vim.opt.number = false
--- You can also add relative line numbers, for help with jumping.
---  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
-
--- Enable mouse mode, can be useful for resizing splits for example!
+vim.opt.number = true
+vim.opt.relativenumber = true
 vim.opt.mouse = 'a'
-
--- Don't show the mode, since it's already in the status line
-vim.opt.showmode = false
-
--- Sync clipboard between OS and Neovim.
---  Remove this option if you want your OS clipboard to remain independent.
---  See `:help 'clipboard'`
+vim.opt.showmode = true
 vim.opt.clipboard = 'unnamedplus'
-
--- Enable break indent
+-- vim.opt.smartindent = false
 vim.opt.breakindent = true
-
--- Save undo history
 vim.opt.undofile = true
-
--- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
-
--- Keep signcolumn on by default
 vim.opt.signcolumn = 'yes'
-
--- Decrease update time
 vim.opt.updatetime = 250
-
--- Decrease mapped sequence wait time
--- Displays which-key popup sooner
 vim.opt.timeoutlen = 300
-
--- Configure how new splits should be opened
 vim.opt.splitright = true
 vim.opt.splitbelow = true
-
--- Sets how neovim will display certain whitespace characters in the editor.
---  See `:help 'list'`
---  and `:help 'listchars'`
 vim.opt.list = true
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
-
--- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'
+vim.opt.cursorline = false
+vim.opt.scrolloff = 999
+vim.opt.sidescrolloff = 999
+-- vim.opt.sidescrolloff = 0
+vim.opt.colorcolumn = "81"
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = true
+-- vim.opt.scrolloff = 7
+vim.opt.conceallevel = 1 -- don't know what is does lol
+-- vim.opt.inccommand = true
+vim.opt.linebreak = true
+vim.opt.whichwrap = "<,>,[,],h,l"
+vim.opt.textwidth = 80
 
--- Show which line your cursor is on
-vim.opt.cursorline = true
-
--- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.scrolloff = 10
-
--- [[ Basic Keymaps ]]
---  See `:help vim.keymap.set()`
-
--- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
@@ -174,16 +51,13 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- or just use <C-\><C-n> to exit terminal mode
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
--- TIP: Disable arrow keys in normal mode
--- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
--- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
--- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+-- Disable arrow keys
+vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
+vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
--- Keybinds to make split navigation easier.
---  Use CTRL+<hjkl> to switch between windows
---
---  See `:help wincmd` for a list of all window commands
+-- Navigation between window
 vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
@@ -349,7 +223,18 @@ require('lazy').setup({
         require('telescope').setup {
           -- You can put your default mappings / updates / etc. in here
           --  All the info you're looking for is in `:help telescope.setup()`
-          --
+          defaults = {
+            layout_config = {
+              width = function(_, cols, _)
+                if cols > 200 then
+                  return 180
+                else
+                  return cols
+                end
+              end,
+              preview_cutoff = 60,
+            }
+          },
           -- defaults = {
           --   mappings = {
           --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
@@ -626,26 +511,6 @@ require('lazy').setup({
       end,
     },
 
-    -- { -- autoformat
-    --   'stevearc/conform.nvim',
-    --   opts = {
-    --     notify_on_error = false,
-    --     format_on_save = {
-    --       timeout_ms = 500,
-    --       lsp_fallback = true,
-    --     },
-    --     formatters_by_ft = {
-    --       lua = { 'stylua' },
-    --       -- conform can also run multiple formatters sequentially
-    --       -- python = { "isort", "black" },
-    --       --
-    --       -- you can use a sub-list to tell conform to run *until* a formatter
-    --       -- is found.
-    --       -- javascript = { { "prettierd", "prettier" } },
-    --     },
-    --   },
-    -- },
-
     { -- autocompletion
       'hrsh7th/nvim-cmp',
       event = 'insertenter',
@@ -719,7 +584,6 @@ require('lazy').setup({
             --  generally you don't need this, because nvim-cmp will display
             --  completions whenever it has completion options available.
             ['<c-space>'] = cmp.mapping.complete {},
-
             -- think of <c-l> as moving to the right of your snippet expansion.
             --  so if you have a snippet that's like:
             --  function $name($args)
@@ -751,11 +615,7 @@ require('lazy').setup({
       end,
     },
 
-    { -- You can easily change to a different colorscheme.
-      -- Change the name of the colorscheme plugin below, and then
-      -- change the command in the config to whatever the name of that colorscheme is.
-      --
-      -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+    {
       'folke/tokyonight.nvim',
       priority = 1000, -- Make sure to load this before all the other start plugins.
       init = function()
@@ -776,7 +636,6 @@ require('lazy').setup({
       'echasnovski/mini.nvim',
       config = function()
         -- Better Around/Inside textobjects
-        --
         -- Examples:
         --  - va)  - [V]isually select [A]round [)]paren
         --  - yinq - [Y]ank [I]nside [N]ext [']quote
@@ -784,7 +643,6 @@ require('lazy').setup({
         require('mini.ai').setup { n_lines = 500 }
 
         -- Add/delete/replace surroundings (brackets, quotes, etc.)
-        --
         -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
         -- - sd'   - [S]urround [D]elete [']quotes
         -- - sr)'  - [S]urround [R]eplace [)] [']
@@ -844,371 +702,25 @@ require('lazy').setup({
     -- init.lua. If you want these files, they are in the repository, so you can just download them and
     -- place them in the correct locations.
 
-    -- NOTE: Next step on your Neovim journey: Add/Configure additional plugins for Kickstart
-    --
-    --  Here are some example plugins that I've included in the Kickstart repository.
-    --  Uncomment any of the lines below to enable them (you will need to restart nvim).
-    --
     -- require 'kickstart.plugins.debug',
     -- require 'kickstart.plugins.indent_line',
     -- require 'kickstart.plugins.lint',
-    -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
-    --    This is the easiest way to modularize your config.
-    --
+
     --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
     --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
-    { import = 'custom.plugins' },
+    -- { import = 'custom.plugins' },
     -- NOTE: My Plugins
-    -- {
-    --   "epwalsh/obsidian.nvim",
-    --   version = "*", -- recommended, use latest release instead of latest commit
-    --   lazy = true,
-    --   ft = "markdown",
-    --   -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
-    --   -- event = {
-    --   --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
-    --   --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/**.md"
-    --   --   "BufReadPre path/to/my-vault/**.md",
-    --   --   "BufNewFile path/to/my-vault/**.md",
-    --   -- },
-    --   dependencies = {
-    --     -- Required.
-    --     "nvim-lua/plenary.nvim",
-    --
-    --     -- see below for full list of optional dependencies 👇
-    --   },
-    --   opts = {
-    --     -- If you use the Obsidian app, the 'path' of a workspace should generally be
-    --     -- your vault root (where the `.obsidian` folder is located).
-    --     -- When obsidian.nvim is loaded by your plugin manager, it will automatically set
-    --     -- the workspace to the first workspace in the list whose `path` is a parent of the
-    --     -- current markdown file being edited.
-    --     workspaces = {
-    --       {
-    --         name = "personal",
-    --         path = "~/Documents/Obsidian Vault/Paul J. R. Notes/",
-    --       },
-    --     },
-    --
-    --     -- Alternatively - and for backwards compatibility - you can set 'dir' to a single path instead of
-    --     -- 'workspaces'. For example:
-    --     -- dir = "~/vaults/work",
-    --
-    --     -- Optional, if you keep notes in a specific subdirectory of your vault.
-    --     notes_subdir = "notes",
-    --
-    --     -- Optional, set the log level for obsidian.nvim. This is an integer corresponding to one of the log
-    --     -- levels defined by "vim.log.levels.*".
-    --     log_level = vim.log.levels.INFO,
-    --
-    --     daily_notes = {
-    --       -- Optional, if you keep daily notes in a separate directory.
-    --       folder = "notes/dailies",
-    --       -- Optional, if you want to change the date format for the ID of daily notes.
-    --       date_format = "%Y-%m-%d",
-    --       -- Optional, if you want to change the date format of the default alias of daily notes.
-    --       alias_format = "%B %-d, %Y",
-    --       -- Optional, if you want to automatically insert a template from your template directory like 'daily.md'
-    --       template = nil
-    --     },
-    --
-    --     -- Optional, completion of wiki links, local markdown links, and tags using nvim-cmp.
-    --     completion = {
-    --       -- Set to false to disable completion.
-    --       nvim_cmp = true,
-    --       -- Trigger completion at 1 chars.
-    --       min_chars = 1,
-    --     },
-    --
-    --     -- Optional, configure key mappings. These are the defaults. If you don't want to set any keymappings this
-    --     -- way then set 'mappings = {}'.
-    --     mappings = {
-    --       -- Overrides the 'gf' mapping to work on markdown/wiki links within your vault.
-    --       ["gf"] = {
-    --         action = function()
-    --           return require("obsidian").util.gf_passthrough()
-    --         end,
-    --         opts = { noremap = false, expr = true, buffer = true },
-    --       },
-    --       -- Toggle check-boxes.
-    --       ["<leader>ch"] = {
-    --         action = function()
-    --           return require("obsidian").util.toggle_checkbox()
-    --         end,
-    --         opts = { buffer = true },
-    --       },
-    --     },
-    --
-    --     -- Where to put new notes. Valid options are
-    --     --  * "current_dir" - put new notes in same directory as the current buffer.
-    --     --  * "notes_subdir" - put new notes in the default notes subdirectory.
-    --     new_notes_location = "notes_subdir",
-    --
-    --     -- Optional, customize how note IDs are generated given an optional title.
-    --     ---@param title string|?
-    --     ---@return string
-    --     note_id_func = function(title)
-    --       -- Create note IDs in a Zettelkasten format with a timestamp and a suffix.
-    --       -- In this case a note with the title 'My new note' will be given an ID that looks
-    --       -- like '1657296016-my-new-note', and therefore the file name '1657296016-my-new-note.md'
-    --       -- local suffix = ""
-    --       -- if title ~= nil then
-    --       --   -- If title is given, transform it into valid file name.
-    --       --   suffix = title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
-    --       -- else
-    --       --   -- If title is nil, just add 4 random uppercase letters to the suffix.
-    --       --   for _ = 1, 4 do
-    --       --     suffix = suffix .. string.char(math.random(65, 90))
-    --       --   end
-    --       -- end
-    --       -- return tostring(os.time()) .. "-" .. suffix
-    --       return ""
-    --     end,
-    --
-    --     -- Optional, customize how note file names are generated given the ID, target directory, and title.
-    --     ---@param spec { id: string, dir: obsidian.Path, title: string|? }
-    --     ---@return string|obsidian.Path The full path to the new note.
-    --     note_path_func = function(spec)
-    --       -- This is equivalent to the default behavior.
-    --       local path = spec.dir / tostring(spec.id)
-    --       return path:with_suffix(".md")
-    --     end,
-    --
-    --     -- Optional, customize how wiki links are formatted. You can set this to one of:
-    --     --  * "use_alias_only", e.g. '[[Foo Bar]]'
-    --     --  * "prepend_note_id", e.g. '[[foo-bar|Foo Bar]]'
-    --     --  * "prepend_note_path", e.g. '[[foo-bar.md|Foo Bar]]'
-    --     --  * "use_path_only", e.g. '[[foo-bar.md]]'
-    --     -- Or you can set it to a function that takes a table of options and returns a string, like this:
-    --     wiki_link = "use_alias_only",
-    --     -- TODO: "use_alias_only",
-    --     wiki_link_func = function(opts)
-    --       -- return require("obsidian.util").wiki_link_id_prefix(opts)
-    --       return require("obsidian.util").wiki_link_id_prefix(opts)
-    --     end,
-    --
-    --     -- Optional, customize how markdown links are formatted.
-    --     markdown_link_func = function(opts)
-    --       return require("obsidian.util").markdown_link(opts)
-    --     end,
-    --
-    --     -- Either 'wiki' or 'markdown'.
-    --     preferred_link_style = "wiki",
-    --
-    --     -- Optional, customize the default name or prefix when pasting images via `:ObsidianPasteImg`.
-    --     ---@return string
-    --     image_name_func = function()
-    --       -- Prefix image names with timestamp.
-    --       return string.format("%s-", os.time())
-    --     end,
-    --
-    --     -- Optional, boolean or a function that takes a filename and returns a boolean.
-    --     -- `true` indicates that you don't want obsidian.nvim to manage frontmatter.
-    --     disable_frontmatter = true,
-    --
-    --     -- Optional, alternatively you can customize the frontmatter data.
-    --     ---@return table
-    --     note_frontmatter_func = function(note)
-    --       -- Add the title of the note as an alias.
-    --       if note.title then
-    --         note:add_alias(note.title)
-    --       end
-    --
-    --       -- local out = { id = note.id, aliases = note.aliases, tags = note.tags }
-    --       local out = {}
-    --       -- `note.metadata` contains any manually added fields in the frontmatter.
-    --       -- So here we just make sure those fields are kept in the frontmatter.
-    --       if note.metadata ~= nil and not vim.tbl_isempty(note.metadata) then
-    --         for k, v in pairs(note.metadata) do
-    --           out[k] = v
-    --         end
-    --       end
-    --
-    --       return out
-    --     end,
-    --
-    --     -- Optional, for templates (see below).
-    --     -- templates = {
-    --     --   subdir = "~/Documents/",
-    --     --   date_format = "%Y-%m-%d",
-    --     --   time_format = "%H:%M",
-    --     --   -- A map for custom variables, the key should be the variable and the value a function
-    --     --   substitutions = {},
-    --     -- },
-    --
-    --     -- Optional, by default when you use `:ObsidianFollowLink` on a link to an external
-    --     -- URL it will be ignored but you can customize this behavior here.
-    --     ---@param url string
-    --     follow_url_func = function(url)
-    --       -- Open the URL in the default web browser.
-    --       vim.fn.jobstart({ "open", url }) -- Mac OS
-    --       -- vim.fn.jobstart({"xdg-open", url})  -- linux
-    --     end,
-    --
-    --     -- Optional, set to true if you use the Obsidian Advanced URI plugin.
-    --     -- https://github.com/Vinzent03/obsidian-advanced-uri
-    --     use_advanced_uri = false,
-    --
-    --     -- Optional, set to true to force ':ObsidianOpen' to bring the app to the foreground.
-    --     open_app_foreground = false,
-    --
-    --     picker = {
-    --       -- Set your preferred picker. Can be one of 'telescope.nvim', 'fzf-lua', or 'mini.pick'.
-    --       name = "telescope.nvim",
-    --       -- Optional, configure key mappings for the picker. These are the defaults.
-    --       -- Not all pickers support all mappings.
-    --       mappings = {
-    --         -- Create a new note from your query.
-    --         new = "<C-x>",
-    --         -- Insert a link to the selected note.
-    --         insert_link = "<C-l>",
-    --       },
-    --     },
-    --
-    --     -- Optional, sort search results by "path", "modified", "accessed", or "created".
-    --     -- The recommend value is "modified" and `true` for `sort_reversed`, which means, for example,
-    --     -- that `:ObsidianQuickSwitch` will show the notes sorted by latest modified time
-    --     sort_by = "modified",
-    --     sort_reversed = true,
-    --
-    --     -- Optional, determines how certain commands open notes. The valid options are:
-    --     -- 1. "current" (the default) - to always open in the current window
-    --     -- 2. "vsplit" - to open in a vertical split if there's not already a vertical split
-    --     -- 3. "hsplit" - to open in a horizontal split if there's not already a horizontal split
-    --     open_notes_in = "current",
-    --
-    --     -- Optional, define your own callbacks to further customize behavior.
-    --     callbacks = {
-    --       -- Runs at the end of `require("obsidian").setup()`.
-    --       ---@param client obsidian.Client
-    --       post_setup = function(client) end,
-    --
-    --       -- Runs anytime you enter the buffer for a note.
-    --       ---@param client obsidian.Client
-    --       ---@param note obsidian.Note
-    --       enter_note = function(client, note) end,
-    --
-    --       -- Runs right before writing the buffer for a note.
-    --       ---@param client obsidian.Client
-    --       ---@param note obsidian.Note
-    --       pre_write_note = function(client, note) end,
-    --
-    --       -- Runs anytime the workspace is set/changed.
-    --       ---@param client obsidian.Client
-    --       ---@param workspace obsidian.Workspace
-    --       post_set_workspace = function(client, workspace) end,
-    --     },
-    --
-    --     -- Optional, configure additional syntax highlighting / extmarks.
-    --     -- This requires you have `conceallevel` set to 1 or 2. See `:help conceallevel` for more details.
-    --     ui = {
-    --       enable = true,         -- set to false to disable all additional syntax features
-    --       update_debounce = 200, -- update delay after a text change (in milliseconds)
-    --       -- Define how various check-boxes are displayed
-    --       checkboxes = {
-    --         -- NOTE: the 'char' value has to be a single character, and the highlight groups are defined below.
-    --         [" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
-    --         ["x"] = { char = "", hl_group = "ObsidianDone" },
-    --         [">"] = { char = "", hl_group = "ObsidianRightArrow" },
-    --         ["~"] = { char = "󰰱", hl_group = "ObsidianTilde" },
-    --         -- Replace the above with this if you don't have a patched font:
-    --         -- [" "] = { char = "☐", hl_group = "ObsidianTodo" },
-    --         -- ["x"] = { char = "✔", hl_group = "ObsidianDone" },
-    --
-    --         -- You can also add more custom ones...
-    --       },
-    --       -- Use bullet marks for non-checkbox lists.
-    --       bullets = { char = "•", hl_group = "ObsidianBullet" },
-    --       external_link_icon = { char = "", hl_group = "ObsidianExtLinkIcon" },
-    --       -- Replace the above with this if you don't have a patched font:
-    --       -- external_link_icon = { char = "", hl_group = "ObsidianExtLinkIcon" },
-    --       reference_text = { hl_group = "ObsidianRefText" },
-    --       highlight_text = { hl_group = "ObsidianHighlightText" },
-    --       tags = { hl_group = "ObsidianTag" },
-    --       block_ids = { hl_group = "ObsidianBlockID" },
-    --       hl_groups = {
-    --         -- The options are passed directly to `vim.api.nvim_set_hl()`. See `:help nvim_set_hl`.
-    --         ObsidianTodo = { bold = true, fg = "#f78c6c" },
-    --         ObsidianDone = { bold = true, fg = "#89ddff" },
-    --         ObsidianRightArrow = { bold = true, fg = "#f78c6c" },
-    --         ObsidianTilde = { bold = true, fg = "#ff5370" },
-    --         ObsidianBullet = { bold = true, fg = "#89ddff" },
-    --         ObsidianRefText = { underline = true, fg = "#c792ea" },
-    --         ObsidianExtLinkIcon = { fg = "#c792ea" },
-    --         ObsidianTag = { italic = true, fg = "#89ddff" },
-    --         ObsidianBlockID = { italic = true, fg = "#89ddff" },
-    --         ObsidianHighlightText = { bg = "#75662e" },
-    --       },
-    --     },
-    --
-    --     -- Specify how to handle attachments.
-    --     attachments = {
-    --       -- The default folder to place images in via `:ObsidianPasteImg`.
-    --       -- If this is a relative path it will be interpreted as relative to the vault root.
-    --       -- You can always override this per image by passing a full path to the command instead of just a filename.
-    --       img_folder = "assets/imgs", -- This is the default
-    --       -- A function that determines the text to insert in the note when pasting an image.
-    --       -- It takes two arguments, the `obsidian.Client` and an `obsidian.Path` to the image file.
-    --       -- This is the default implementation.
-    --       ---@param client obsidian.Client
-    --       ---@param path obsidian.Path the absolute path to the image file
-    --       ---@return string
-    --       img_text_func = function(client, path)
-    --         local link_path
-    --         local vault_relative_path = client:vault_relative_path(path)
-    --         if vault_relative_path ~= nil then
-    --           -- Use relative path if the image is saved in the vault dir.
-    --           link_path = vault_relative_path
-    --         else
-    --           -- Otherwise use the absolute path.
-    --           link_path = tostring(path)
-    --         end
-    --         local display_name = vim.fs.basename(link_path)
-    --         return string.format("![%s](%s)", display_name, link_path)
-    --       end,
-    --     }
-    --   },
-    -- },
-    -- {
-    --   "ThePrimeagen/harpoon",
-    --   branch = "harpoon2",
-    --   dependencies = { "nvim-lua/plenary.nvim" },
-    --   config = function()
-    --     local harpoon = require("harpoon")
-    --     harpoon:setup()
-    --     vim.api.nvim_create_user_command('HarpoonAdd', function(_)
-    --       harpoon:list():append()
-    --     end, { desc = 'Add file to Harpoon list' })
-    --     -- vim.keymap.set("n", "<leader>a", function() harpoon:list():append() end)
-    --     vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
-    --
-    --     -- vim.keymap.set("n", "<C-h>", function() harpoon:list():select(1) end)
-    --     -- vim.keymap.set("n", "<C-t>", function() harpoon:list():select(2) end)
-    --     -- vim.keymap.set("n", "<C-n>", function() harpoon:list():select(3) end)
-    --     -- vim.keymap.set("n", "<C-s>", function() harpoon:list():select(4) end)
-    --
-    --     -- Toggle previous & next buffers stored within Harpoon list
-    --     vim.keymap.set("n", "<C-S-P>", function() harpoon:list():prev() end)
-    --     vim.keymap.set("n", "<C-S-N>", function() harpoon:list():next() end)
-    --   end
-    --
     -- 'Myriad-Dreamin/tinymist',
-    -- require 'custom.plugins.tinymist',
+    -- tinymist
     {
       "kdheepak/lazygit.nvim",
       cmd = {
         "LazyGit",
-        -- "LazyGitConfig",
-        -- "LazyGitCurrentFile",
-        -- "LazyGitFilter",
-        -- "LazyGitFilterCurrentFile",
       },
-      -- optional for floating window border decoration
       dependencies = {
         "nvim-lua/plenary.nvim",
       },
     },
-    -- 'Myriad-Dreamin/tinymist',
     'mbbill/undotree',
     'bellinitte/uxntal.vim',
     'Pocco81/auto-save.nvim',
@@ -1253,9 +765,12 @@ require('lazy').setup({
         require('crates').setup()
       end,
     },
-    --   'windwp/nvim-autopairs',
-    --   'mrcjkb/rustaceanvim',
-    -- TODO: test rooter
+    'whonore/Coqtail',
+    -- 'windwp/nvim-autopairs',
+    -- 'mrcjkb/rustaceanvim',
+    -- test rooter
+    -- autoformat : 'stevearc/conform.nvim',
+    -- hardtime.nvim (tells you when there is better command to do something)
   },
   {
     ui = {
@@ -1279,31 +794,15 @@ require('lazy').setup({
     },
   })
 
--- NOTE: My options
-vim.opt.colorcolumn = "81"
-vim.opt.tabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
-vim.opt.scrolloff = 7
-vim.opt.conceallevel = 1 -- for ui in obsidian.nvim
--- vim.opt.inccommand = true
-vim.opt.linebreak = true
-vim.opt.whichwrap = "<,>,[,]"
-vim.opt.textwidth = 80
-
--- NOTE: My commands and shortcut
-
 -- LSP test in all modes (worked)
-vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-  -- delay update diagnostics
-  update_in_insert = true,
-})
+vim.lsp.handlers["textDocument/publishDiagnostics"] =
+    vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+      -- delay update diagnostics
+      update_in_insert = true,
+    })
 
 vim.diagnostic.config { update_in_insert = true }
 
--- Custom Command
--- FORMAT
--- Create a command `:Format` local to the LSP buffer
 vim.api.nvim_create_user_command('Format', function(_)
   if vim.bo.filetype == "typst" then
     vim.cmd(":!typstfmt %")
@@ -1323,18 +822,13 @@ vim.api.nvim_create_user_command('Love2DRun', function(_)
   os.execute('love ' .. vim.loop.cwd())
 end, { desc = 'Run Love2D Project' })
 
--- Personnal Shortcut
-vim.keymap.set('n', '<leader>tu', vim.cmd.UndotreeToggle, { desc = '[T]ree [U]ndo' })
-
-vim.keymap.set('n', '<leader>tf', vim.cmd.NvimTreeToggle, { desc = '[T]ree [F]ile' })
--- vim.keymap.set('n', '<leader>ec', vim.cmd.Config, { desc = '[e]dit [c]onfig' })
+vim.keymap.set('n', '<leader>tu',
+  vim.cmd.UndotreeToggle, { desc = '[T]ree [U]ndo' })
+vim.keymap.set('n', '<leader>tf',
+  vim.cmd.NvimTreeToggle, { desc = '[T]ree [F]ile' })
 -- visual j and k
 vim.keymap.set({ 'n', 'v' }, 'j', 'gj')
 vim.keymap.set({ 'n', 'v' }, 'k', 'gk')
-vim.keymap.set({ 'n', 'v' }, '<Up>', 'gk')
-vim.keymap.set({ 'n', 'v' }, '<Down>', 'gj')
--- vim.keymap.set({'i'}, '<Up>', '<Esc>gka')
--- vim.keymap.set({'i'}, '<Down>', '<Esc>gja')
 vim.keymap.set('n', 'x', '"0x')
 vim.keymap.set('n', '<leader>a', 'gg0vG$y<C-O>', { desc = 'Yank [A]ll File' })
 -- paste only something that was paste
