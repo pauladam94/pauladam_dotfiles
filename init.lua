@@ -1,39 +1,46 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = false
-vim.opt.number = true
-vim.opt.relativenumber = true
 vim.opt.mouse = 'a'
 vim.opt.showmode = true
 vim.opt.clipboard = 'unnamedplus'
--- vim.opt.smartindent = false
-vim.opt.breakindent = true
 vim.opt.undofile = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.signcolumn = 'yes'
-vim.opt.updatetime = 250
+vim.opt.updatetime = 400
 vim.opt.timeoutlen = 300
-vim.opt.splitright = true
-vim.opt.splitbelow = true
+-- Number line stuff
+vim.opt.number = true
+vim.opt.relativenumber = true
+-- Indent Stuf
+vim.opt.smartindent = false
+vim.opt.autoindent = false
+vim.opt.breakindent = true
 vim.opt.list = true
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+-- Split Stuff
+vim.opt.splitright = true
+vim.opt.splitbelow = true
+
 vim.opt.inccommand = 'split'
-vim.opt.cursorline = false
-vim.opt.scrolloff = 999
+vim.opt.cursorline = true
+vim.opt.cursorcolumn = true
+-- vim.opt.guicursor = ""
+-- Scroll Stuff
+vim.opt.scrolloff = 7
 vim.opt.sidescrolloff = 999
--- vim.opt.sidescrolloff = 0
 vim.opt.colorcolumn = "81"
-vim.opt.tabstop = 4
+
+-- Tab/Spaces Stuff
+vim.opt.tabstop = 8
 vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
--- vim.opt.scrolloff = 7
+vim.opt.expandtab = false
 vim.opt.conceallevel = 1 -- don't know what is does lol
--- vim.opt.inccommand = true
+-- vim.opt.inccommand = true -- same
 vim.opt.linebreak = true
 vim.opt.whichwrap = "<,>,[,],h,l"
 vim.opt.textwidth = 80
-
 vim.opt.hlsearch = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
@@ -622,7 +629,9 @@ require('lazy').setup({
         -- Load the colorscheme here.
         -- Like many other themes, this one has different styles, and you could load
         -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-        vim.cmd.colorscheme 'tokyonight-night'
+        -- dark : tokyonight-night
+        -- light : delek quiet shine
+        vim.cmd.colorscheme 'peachpuff'
 
         -- You can configure highlights by doing something like:
         vim.cmd.hi 'Comment gui=none'
@@ -765,7 +774,13 @@ require('lazy').setup({
         require('crates').setup()
       end,
     },
-    'whonore/Coqtail',
+    {
+      'whonore/Coqtail',
+      config = function()
+        vim.keymap.set('n', '<c-A-j>', vim.cmd.CoqNext, { desc = 'Coq Next' })
+        vim.keymap.set('n', '<c-A-k>', vim.cmd.CoqUndo, { desc = 'Coq Undo' })
+      end
+    },
     -- 'windwp/nvim-autopairs',
     -- 'mrcjkb/rustaceanvim',
     -- test rooter
@@ -794,6 +809,8 @@ require('lazy').setup({
     },
   })
 
+-- vim.diagnostic.config({ virtual_text = false })
+
 -- LSP test in all modes (worked)
 vim.lsp.handlers["textDocument/publishDiagnostics"] =
     vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -821,6 +838,14 @@ vim.api.nvim_create_user_command('Love2DRun', function(_)
   print(vim.loop.cwd())
   os.execute('love ' .. vim.loop.cwd())
 end, { desc = 'Run Love2D Project' })
+
+vim.api.nvim_create_user_command("PresentationMode", function()
+  vim.opt.listchars = { tab = '» ', trail = ' ', nbsp = '␣' }
+  vim.opt.relativenumber = false
+  vim.opt.number = false
+  vim.opt.scrolloff = 0
+  vim.opt.sidescrolloff = 0
+end, { desc = '' })
 
 vim.keymap.set('n', '<leader>tu',
   vim.cmd.UndotreeToggle, { desc = '[T]ree [U]ndo' })
