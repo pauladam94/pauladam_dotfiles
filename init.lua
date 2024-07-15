@@ -1,6 +1,7 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = false
+
 vim.opt.mouse = 'a'
 vim.opt.showmode = true
 vim.opt.clipboard = 'unnamedplus'
@@ -32,6 +33,9 @@ vim.opt.scrolloff = 7
 vim.opt.sidescrolloff = 999
 vim.opt.colorcolumn = "81"
 
+-- Wrap Stuff
+-- vim.o.nowrap = false
+vim.wo.wrap = true
 -- Tab/Spaces Stuff
 vim.opt.tabstop = 8
 vim.opt.shiftwidth = 4
@@ -239,7 +243,8 @@ require('lazy').setup({
                   return cols
                 end
               end,
-              preview_cutoff = 60,
+              height = 200,
+              preview_cutoff = 80,
             }
           },
           -- defaults = {
@@ -314,31 +319,6 @@ require('lazy').setup({
         { 'folke/neodev.nvim', opts = {} },
       },
       config = function()
-        -- Brief aside: **What is LSP?**
-        --
-        -- LSP is an initialism you've probably heard, but might not understand what it is.
-        --
-        -- LSP stands for Language Server Protocol. It's a protocol that helps editors
-        -- and language tooling communicate in a standardized fashion.
-        --
-        -- In general, you have a "server" which is some tool built to understand a particular
-        -- language (such as `gopls`, `lua_ls`, `rust_analyzer`, etc.). These Language Servers
-        -- (sometimes called LSP servers, but that's kind of like ATM Machine) are standalone
-        -- processes that communicate with some "client" - in this case, Neovim!
-        --
-        -- LSP provides Neovim with features like:
-        --  - Go to definition
-        --  - Find references
-        --  - Autocompletion
-        --  - Symbol Search
-        --  - and more!
-        --
-        -- Thus, Language Servers are external tools that must be installed separately from
-        -- Neovim. This is where `mason` and related plugins come into play.
-        --
-        -- If you're wondering about lsp vs treesitter, you can check out the wonderfully
-        -- and elegantly composed help section, `:help lsp-vs-treesitter`
-
         --  This function gets run when an LSP attaches to a particular buffer.
         --    That is to say, every time a new file is opened that is associated with
         --    an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this
@@ -834,8 +814,8 @@ vim.keymap.set('n', '<leader>f', vim.cmd.Format, { desc = '[F]ormat file' })
 vim.api.nvim_create_user_command('Config', 'edit ~/.config/nvim/init.lua', {})
 
 -- love2D shortcut
-vim.api.nvim_create_user_command('Love2DRun', function(_)
-  print(vim.loop.cwd())
+vim.api.nvim_create_user_command('Love2DRun', function()
+  -- print(vim.loop.cwd())
   os.execute('love ' .. vim.loop.cwd())
 end, { desc = 'Run Love2D Project' })
 
@@ -845,12 +825,23 @@ vim.api.nvim_create_user_command("PresentationMode", function()
   vim.opt.number = false
   vim.opt.scrolloff = 0
   vim.opt.sidescrolloff = 0
-end, { desc = '' })
+  vim.opt.signcolumn = "no"
+  vim.opt.laststatus = 0
+  vim.opt.colorcolumn = ""
+end, { desc = 'Changes to present something' })
 
-vim.keymap.set('n', '<leader>tu',
-  vim.cmd.UndotreeToggle, { desc = '[T]ree [U]ndo' })
-vim.keymap.set('n', '<leader>tf',
-  vim.cmd.NvimTreeToggle, { desc = '[T]ree [F]ile' })
+vim.keymap.set('n', '<leader>pu',
+  vim.cmd.UndotreeToggle, { desc = '[P]op Tree [U]ndo' })
+vim.keymap.set('n', '<leader>pf',
+  vim.cmd.NvimTreeToggle, { desc = '[P]op Tree [F]ile' })
+vim.keymap.set('n', '<leader>pt', function()
+  -- split
+  -- terminal
+  -- enter insert
+  vim.cmd.Terminal()
+  vim.cmd.insert()
+end, { desc = '[P]op [T]erminal' })
+
 -- visual j and k
 vim.keymap.set({ 'n', 'v' }, 'j', 'gj')
 vim.keymap.set({ 'n', 'v' }, 'k', 'gk')
