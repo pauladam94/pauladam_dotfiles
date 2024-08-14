@@ -4,10 +4,19 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
   # imports = [ ./hardware-configuration.nix ];
   # imports = [ /home/pauladam/.config/nixos/configuration.nix ];
 
+  boot = {
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
+  };
+
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  networking.hostName = "nixos"; # Define your hostname.
+  # boot.loader.systemd-boot.enable = true;
+  # boot.loader.efi.canTouchEfiVariables = true;
+
+  # Define your hostname.
+  networking.hostName = "nixos";
 
   # Enables wireless support via wpa_supplicant.
   # networking.wireless.enable = true; Enable networking
@@ -45,8 +54,7 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
   services.xserver.desktopManager.gnome.enable = true;
   # services.displayManager.defaultSession = "hyprland";
 
-  # Documentation // does not work right now
-  documentation.enable = true;
+  # Documentation // does not work right now documentation.enable = true;
   documentation.man.enable = true;
   documentation.dev.enable = true;
 
@@ -177,12 +185,13 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
 
   environment.systemPackages = with pkgs; [
     ## Web Browser
-    chromium
+    # chromium
 
     ## Utilities
     yazi # file explorer
     sioyek # pdf viewer
-    gnome-multi-writer
+    # xpdf # pdf tools (such as pdftotext) unstable ??
+    # gnome-multi-writer
     ## Other
     # toybox busybox
 
@@ -213,16 +222,22 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
     clang
     clang-tools
     gcc
+    lldb
     # libgcc
     raylib
 
+    ## Hare
+    hare
+
     ## Typst
-    typst
-    tinymist
+    # typst
+    # typstfmt
+    unstable.tinymist
+    # tinymist
 
     ## Rust
     rustup
-    # rust-analyzer
+    rust-analyzer
 
     ## Nix
     nixpkgs-fmt

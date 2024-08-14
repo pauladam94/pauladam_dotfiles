@@ -16,8 +16,8 @@ vim.opt.updatetime = 400
 vim.opt.timeoutlen = 300
 
 -- Number line stuff
-vim.opt.number = true
-vim.opt.relativenumber = true
+vim.opt.number = false
+vim.opt.relativenumber = false
 
 -- Indent Stuf
 vim.opt.smartindent = false
@@ -222,6 +222,7 @@ require("lazy").setup({
     "neovim/nvim-lspconfig",
     dependencies = {
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
+      "kevinhwang91/nvim-ufo",
       { "j-hui/fidget.nvim", opts = {} },
       { "folke/neodev.nvim", opts = {} },
     },
@@ -273,65 +274,61 @@ require("lazy").setup({
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
-      local servers = {
-        rust_analyzer = {
-          setting = {
-            ["rust-analyzer"] = {
-              imports = {
-                granularity = {
-                  group = "module",
-                },
-                prefix = "self",
+
+      local lsp_capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+      -- RUST
+      require("lspconfig")["rust_analyzer"].setup {
+        on_attach = function(client, bufnr)
+          vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+        end,
+        capabilities = lsp_capabilities,
+        settings = {
+          ["rust-analyzer"] = {
+            imports = {
+              granularity = {
+                group = "module",
               },
-              cargo = {
-                buildScripts = {
-                  enable = true,
-                },
-              },
-              procMacro = {
+              prefix = "self",
+            },
+            cargo = {
+              buildScripts = {
                 enable = true,
               },
             },
-          },
-        },
-        typst_lsp = {
-          cmd = {
-            "/Users/pauladam/.local/share/nvim/mason/bin/tinymist",
-          },
-          single_file_support = true,
-          root_dir = function()
-            return vim.fn.getcwd()
-          end,
-          settings = {
-            experimentalFormatterMode = "on",
-          },
-        },
-        lua_ls = {
-          settings = {
-            Lua = {
-              diagnostics = { globals = { "vim" } },
-              completion = {
-                callSnippet = "Replace",
-              },
+            procMacro = {
+              enable = true,
             },
           },
         },
-        tinymist = {},
-        nil_ls = {},
       }
-      local lsp_capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+      -- TINYMIST
       require("lspconfig")["tinymist"].setup {
         capabilities = lsp_capabilities,
+        root_dir = function(filename, bufnr)
+          return "/home/pauladam/PaulJR/"
+        end,
+        settings = {
+          tinymist = {
+            settings = {},
+          },
+        },
       }
+
+      -- TYPESCRIPT
       require("lspconfig")["tsserver"].setup {
         capabilities = lsp_capabilities,
       }
+      -- CLANGD
       require("lspconfig")["clangd"].setup {
         capabilities = lsp_capabilities,
       }
+      -- COQ
       require("lspconfig")["coq_lsp"].setup {
         capabilities = lsp_capabilities,
       }
+      -- LUA LS
       require("lspconfig")["lua_ls"].setup {
         capabilities = lsp_capabilities,
         cmd = { "lua-lsp" },
@@ -637,9 +634,6 @@ require("lazy").setup({
 
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   -- { import = 'custom.plugins' },
-  -- NOTE: My Plugins
-  -- 'Myriad-Dreamin/tinymist',
-  -- tinymist
   {
     "kdheepak/lazygit.nvim",
     cmd = {
@@ -655,10 +649,18 @@ require("lazy").setup({
   {
     "nvim-tree/nvim-tree.lua",
     dependencies = {
-      "nvim-tree/nvim-web-devicons", -- optional
+      "nvim-tree/nvim-web-devicons",
     },
     config = function()
       require("nvim-tree").setup {
+        filters = {
+          dotfiles = false,
+          custom = { "^.git$" },
+        },
+        -- filters = {
+        -- 	dotfiles = false,
+        -- 	custom = { "^.git$" },
+        -- },
         diagnostics = {
           enable = true,
           icons = {
@@ -698,6 +700,7 @@ require("lazy").setup({
   {
     "whonore/Coqtail",
     config = function()
+      vim.keymap.set("n", "<A-j>", vim.cmd.CoqToLine, { desc = "Coq to Cursor" })
       vim.keymap.set("n", "<c-A-j>", vim.cmd.CoqNext, { desc = "Coq Next" })
       vim.keymap.set("n", "<c-A-k>", vim.cmd.CoqUndo, { desc = "Coq Undo" })
     end,
@@ -740,9 +743,7 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagn
 vim.diagnostic.config { update_in_insert = true }
 
 vim.api.nvim_create_user_command("Format", function(_)
-  if vim.bo.filetype == "typst" then
-    vim.cmd ":!typstfmt %"
-  elseif vim.bo.filetype == "lua" then
+  if vim.bo.filetype == "lua" then
     vim.cmd ":!stylua %"
   elseif vim.bo.filetype == "nix" then
     vim.cmd ":!nixpkgs-fmt %"
@@ -750,6 +751,11 @@ vim.api.nvim_create_user_command("Format", function(_)
     vim.lsp.buf.format()
   end
 end, { desc = "Format current buffer with LSP" })
+
+vim.api.nvim_create_user_command("TinymistPreview", function(_)
+  vim.cmd ":silent !tinymist preview %"
+end, { desc = "Begin TinymistPreview" })
+
 -- format typst file
 vim.keymap.set("n", "<leader>f", vim.cmd.Format, { desc = "[F]ormat file" })
 
