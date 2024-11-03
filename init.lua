@@ -32,7 +32,6 @@ vim.opt.splitbelow = true
 
 -- Show Command while writing it
 vim.opt.inccommand = "split"
-
 -- Markc clearly current line and column
 vim.opt.cursorline = true
 vim.opt.cursorcolumn = true
@@ -303,6 +302,19 @@ require("lazy").setup({
         },
       }
 
+      require("lspconfig").nixd.setup {
+        cmd = { "nixd" },
+        settings = {
+            nixd = {
+                nixpkgs = { 
+                  expr = "import <nixpkgs> { }"
+                },
+                formatting = {
+                  command = { "nixpkgs-fmt" },
+                }
+            }
+        }
+      }
       -- TINYMIST
       require("lspconfig")["tinymist"].setup {
         capabilities = lsp_capabilities,
@@ -311,15 +323,25 @@ require("lazy").setup({
         end,
         settings = {
           tinymist = {
-            settings = {},
+            settings = {
+              formatterMode = "typstfmt",
+            },
           },
         },
       }
 
-      -- TYPESCRIPT
-      require("lspconfig")["tsserver"].setup {
+      -- OCaml
+      require("lspconfig")["ocamllsp"].setup {
         capabilities = lsp_capabilities,
+        root_dir = function(filename, bufnr)
+	  return vim.fn.getcwd()
+        end,
       }
+      -- TYPESCRIPT
+      -- tsserver deprecate use 'ts_ls' instead
+      -- require("lspconfig")["tsserver"].setup {
+      --   capabilities = lsp_capabilities,
+      -- }
       -- CLANGD
       require("lspconfig")["clangd"].setup {
         capabilities = lsp_capabilities,
@@ -747,6 +769,8 @@ vim.api.nvim_create_user_command("Format", function(_)
     vim.cmd ":!stylua %"
   elseif vim.bo.filetype == "nix" then
     vim.cmd ":!nixpkgs-fmt %"
+  -- elseif vim.bo.filetype == "ocaml" then
+  --   vim.cmd ":!ocamlformat %"
   else
     vim.lsp.buf.format()
   end

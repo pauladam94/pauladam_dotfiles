@@ -1,6 +1,7 @@
 { config, pkgs, ... }:
 
-let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in {
+let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
+{
   # imports = [ ./hardware-configuration.nix ];
   # imports = [ /home/pauladam/.config/nixos/configuration.nix ];
 
@@ -11,15 +12,22 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
     };
   };
 
-  # Bootloader.
+
+  # sheel aliases TODO
+  # mkShell = {
+  #   shellHook =
+  #     ''
+  #       zsh
+  #     '';
+  # };
+
+  # Bootloader
   # boot.loader.systemd-boot.enable = true;
   # boot.loader.efi.canTouchEfiVariables = true;
 
   # Define your hostname.
-  networking.hostName = "nixos";
-
-  # Enables wireless support via wpa_supplicant.
-  # networking.wireless.enable = true; Enable networking
+  networking.hostName = "nixos"; # Enables wireless support via wpa_supplicant.
+  # networking.wireless.enable = true; # Enable networking
   networking.networkmanager.enable = true;
 
   # Configure network proxy if necessary
@@ -54,46 +62,47 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
   services.xserver.desktopManager.gnome.enable = true;
   # services.displayManager.defaultSession = "hyprland";
 
-  # Documentation // does not work right now documentation.enable = true;
+  # Documentation // does not work right now
+  documentation.enable = true;
   documentation.man.enable = true;
   documentation.dev.enable = true;
 
   # Delete some Gnome apps
   # services.gnome.core-utilities.enable = false; # delete all apps
-  environment.gnome.excludePackages = with pkgs.gnome;
-    [
-      cheese # photo booth
-      epiphany # web browser
-      yelp # help viewer
-      file-roller # archive manager
-      geary # email client
-      seahorse # password manager 
-      gnome-calculator
-      gnome-calendar
-      gnome-characters
-      gnome-clocks
-      gnome-contacts
-      gnome-logs
-      gnome-maps
-      gnome-music
-      gnome-weather
-      gnome-system-monitor
-      pkgs.gnome-text-editor
-      pkgs.gnome-console
-      pkgs.gnome-connections
-      pkgs.gnome-tour
+  environment.gnome.excludePackages = with pkgs.gnome; [
+    cheese # photo booth
+    epiphany # web browser
+    yelp # help viewer
+    file-roller # archive manager
+    geary # email client
+    seahorse # password manager 
+    gnome-calculator
+    gnome-calendar
+    gnome-characters
+    gnome-clocks
+    gnome-contacts
+    gnome-logs
+    gnome-maps
+    gnome-music
+    gnome-weather
+    gnome-system-monitor
 
-      gnome-disk-utility
 
-      # pkgs.gedit # text editor not in gnome right now
-      # baobab # disk usage analyzer
-      # eog # image viewer
-      # simple-scan # document scanner
-      # totem # video player
-      # gnome-photos
-      # evince # document viewer
-      # gnome-screenshot gnome-font-viewer
-    ];
+    gnome-disk-utility
+
+    pkgs.gnome-text-editor
+    pkgs.gnome-console
+    pkgs.gnome-connections
+    pkgs.gnome-tour
+    # pkgs.gedit # text editor not in gnome right now
+    # baobab # disk usage analyzer
+    # eog # image viewer
+    # simple-scan # document scanner
+    # totem # video player
+    # gnome-photos
+    # evince # document viewer
+    # gnome-screenshot gnome-font-viewer
+  ];
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -106,6 +115,11 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
 
   # Enable sound with pipewire.
   hardware.pulseaudio.enable = false;
@@ -128,9 +142,8 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
     isNormalUser = true;
     description = "pauladam";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-      # program to install if I want
-    ];
+    # packages = with pkgs; [
+    # ];
   };
 
   # Enable automatic login for the user.
@@ -143,10 +156,16 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
 
   nixpkgs.config.allowUnfree = true;
 
-  users.defaultUserShell = pkgs.zsh;
-  programs.zsh = {
-    enable = true;
+  # Virtual Box
+  virtualisation.virtualbox.host.enable = true;
+  # virtualisation.virtualbox.host.enableExtensionPack = true;
+  users.extraGroups.vboxusers.members = [ "pauladam" ];
 
+  # Zsh
+  /*
+    users.defaultUserShell = pkgs.zsh;
+    programs.zsh = {
+    enable = true;
     enableCompletion = false; # test
     autosuggestions.enable = true; # before true
     zsh-autoenv.enable = true;
@@ -160,10 +179,12 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
         "history"
         "node"
         "rust"
-        "deno"
+        # "deno"
       ];
     };
-  };
+    };
+  */
+
   programs.hyprland.enable = true;
   programs.firefox.enable = true;
   # programs.chromium.enable = true;
@@ -174,16 +195,25 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
   # };
   programs.steam = {
     enable = true;
-    remotePlay.openFirewall = true;
-    dedicatedServer.openFirewall = true;
-    localNetworkGameTransfers.openFirewall = true;
+    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
   };
 
   fonts.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "FiraCode" ]; })
   ];
+  # pkgs.mkShell {
+  #   packages = [
+  #     pkgs.ocamlPackages.graphics
+  #     pkgs.ocamlPackages.utop
+  #     pkgs.ocamlPackages.findlib
+  #   ]
+  # };
 
   environment.systemPackages = with pkgs; [
+    man-pages
+    man-pages-posix
     ## Web Browser
     # chromium
 
@@ -197,20 +227,30 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
 
     ## Neovim Setup
     unstable.neovim
+    vim
     ripgrep
     fd
     unzip
     tree-sitter
     wget
     wl-clipboard
-    tldr # better man page 
-    syncthing # sync file between devices 
+    tldr # better man page
+    syncthing # sync file between devices
     gnome.gnome-tweaks
     kitty # terminal emulator
     lutris # game utility on linux
 
     ## Hyprland
     brightnessctl # utilitary to change screen brightness
+
+    wayland-scanner
+
+    ## Truc Agreg
+    # virtualbox
+    mypy
+    graphviz
+    vscodium
+    jetbrains.pycharm-community-src
 
     ## Programming
     git
@@ -230,20 +270,28 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
     hare
 
     ## Typst
-    # typst
-    # typstfmt
+    unstable.typst
     unstable.tinymist
-    # tinymist
+    typstyle
+    typst-live
+    typst-preview
 
     ## Rust
     rustup
     rust-analyzer
 
     ## Nix
+    nixd
     nixpkgs-fmt
 
     ## Coq - Ocaml
     opam
+    ocaml
+    ocamlPackages.ocaml-lsp
+    ocamlPackages.ocamlformat
+    ocamlPackages.graphics
+    ocamlPackages.utop
+    ocamlPackages.findlib
     coq
     coqPackages.coq-lsp
 
@@ -251,7 +299,8 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
 
     ## Python
     python312
-    python312Packages.pygame
+    python312Packages.python-lsp-server
+    # python312Packages.pygame
 
     ## Lua
     # luajit lua
@@ -266,9 +315,7 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
     ## JS - TS
     nodejs
     typescript
-    nodePackages.typescript-language-server
-
-    wayland-scanner
+    nodePackages.typescript-language-server # deprecate change ?
   ];
 
   # Some programs need SUID wrappers,
