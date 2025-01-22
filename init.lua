@@ -47,8 +47,8 @@ vim.opt.colorcolumn = "81"
 vim.wo.wrap = true
 
 -- Tab/Spaces Stuff
-vim.opt.tabstop = 8
-vim.opt.shiftwidth = 8
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
 vim.opt.expandtab = false
 vim.opt.conceallevel = 1 -- don't know what is does lol
 -- vim.opt.inccommand = true -- same
@@ -65,7 +65,7 @@ vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagn
 vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagnostic [Q]uickfix list" })
 
 -- Exit Terminal with double escape
-vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+-- vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
 -- Disable arrow keys
 vim.keymap.set("n", "<left>", '<cmd>echo "Use h to move!!"<CR>')
@@ -74,10 +74,10 @@ vim.keymap.set("n", "<up>", '<cmd>echo "Use k to move!!"<CR>')
 vim.keymap.set("n", "<down>", '<cmd>echo "Use j to move!!"<CR>')
 
 -- Navigation between window
-vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" })
-vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })
-vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
-vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
+-- vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left window" })
+-- vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })
+-- vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
+-- vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
 
 vim.api.nvim_create_autocmd("TextYankPost", { -- highlight yank text
   desc = "Highlight when yanking (copying) text",
@@ -305,15 +305,15 @@ require("lazy").setup({
       require("lspconfig").nixd.setup {
         cmd = { "nixd" },
         settings = {
-            nixd = {
-                nixpkgs = { 
-                  expr = "import <nixpkgs> { }"
-                },
-                formatting = {
-                  command = { "nixpkgs-fmt" },
-                }
-            }
-        }
+          nixd = {
+            nixpkgs = {
+              expr = "import <nixpkgs> { }",
+            },
+            formatting = {
+              command = { "nixpkgs-fmt" },
+            },
+          },
+        },
       }
       -- TINYMIST
       require("lspconfig")["tinymist"].setup {
@@ -334,7 +334,7 @@ require("lazy").setup({
       require("lspconfig")["ocamllsp"].setup {
         capabilities = lsp_capabilities,
         root_dir = function(filename, bufnr)
-	  return vim.fn.getcwd()
+          return vim.fn.getcwd()
         end,
       }
       -- TYPESCRIPT
@@ -342,6 +342,18 @@ require("lazy").setup({
       -- require("lspconfig")["tsserver"].setup {
       --   capabilities = lsp_capabilities,
       -- }
+      -- ODIN
+      require("lspconfig")["ols"].setup {
+        capabilities = lsp_capabilities,
+      }
+      -- ZIG
+      require("lspconfig")["zls"].setup {
+        capabilities = lsp_capabilities,
+      }
+      -- PYTHON
+      require("lspconfig")["pylsp"].setup {
+        capabilities = lsp_capabilities,
+      }
       -- CLANGD
       require("lspconfig")["clangd"].setup {
         capabilities = lsp_capabilities,
@@ -727,6 +739,7 @@ require("lazy").setup({
       vim.keymap.set("n", "<c-A-k>", vim.cmd.CoqUndo, { desc = "Coq Undo" })
     end,
   },
+  "ThePrimeagen/vim-be-good",
   -- 'windwp/nvim-autopairs',
   -- 'mrcjkb/rustaceanvim',
   -- test rooter

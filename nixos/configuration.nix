@@ -29,6 +29,7 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
   networking.hostName = "nixos"; # Enables wireless support via wpa_supplicant.
   # networking.wireless.enable = true; # Enable networking
   networking.networkmanager.enable = true;
+  networking.wireless.userControlled.enable = true;
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -155,7 +156,6 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
   systemd.services."autovt@tty1".enable = true;
 
   nixpkgs.config.allowUnfree = true;
-
   # Virtual Box
   virtualisation.virtualbox.host.enable = true;
   # virtualisation.virtualbox.host.enableExtensionPack = true;
@@ -263,7 +263,7 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
     clang-tools
     gcc
     lldb
-    # libgcc
+    libgcc
     raylib
 
     ## Hare
@@ -279,6 +279,7 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
     ## Rust
     rustup
     rust-analyzer
+    cargo
 
     ## Nix
     nixd
@@ -298,8 +299,9 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
     ## go # create a go directory in ~
 
     ## Python
-    python312
+    # python312
     python312Packages.python-lsp-server
+    pypy3
     # python312Packages.pygame
 
     ## Lua
@@ -333,5 +335,5 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
   # Or disable the firewall altogether. networking.firewall.enable = false;
   # skip_global_compinit = 1;
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.05";
+  system.stateVersion = "24.11";
 }
