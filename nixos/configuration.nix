@@ -62,7 +62,7 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
   services.xserver.desktopManager.gnome.enable = true;
   # services.displayManager.defaultSession = "hyprland";
 
-  services.tlp.enable = true;
+  # services.tlp.enable = true; // already have powerdaemon ? where ?
 
   # Documentation // does not work right now
   documentation.enable = true;
