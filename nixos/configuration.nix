@@ -30,7 +30,6 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
   # networking.wireless.enable = true; # Enable networking
   networking.networkmanager.enable = true;
   networking.wireless.userControlled.enable = true;
-
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
@@ -63,47 +62,14 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
   services.xserver.desktopManager.gnome.enable = true;
   # services.displayManager.defaultSession = "hyprland";
 
+  services.tlp.enable = true;
+
   # Documentation // does not work right now
   documentation.enable = true;
   documentation.man.enable = true;
   documentation.dev.enable = true;
 
-  # Delete some Gnome apps
-  # services.gnome.core-utilities.enable = false; # delete all apps
-  environment.gnome.excludePackages = with pkgs.gnome; [
-    cheese # photo booth
-    epiphany # web browser
-    yelp # help viewer
-    file-roller # archive manager
-    geary # email client
-    seahorse # password manager 
-    gnome-calculator
-    gnome-calendar
-    gnome-characters
-    gnome-clocks
-    gnome-contacts
-    gnome-logs
-    gnome-maps
-    gnome-music
-    gnome-weather
-    gnome-system-monitor
 
-
-    gnome-disk-utility
-
-    pkgs.gnome-text-editor
-    pkgs.gnome-console
-    pkgs.gnome-connections
-    pkgs.gnome-tour
-    # pkgs.gedit # text editor not in gnome right now
-    # baobab # disk usage analyzer
-    # eog # image viewer
-    # simple-scan # document scanner
-    # totem # video player
-    # gnome-photos
-    # evince # document viewer
-    # gnome-screenshot gnome-font-viewer
-  ];
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -185,6 +151,41 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
     };
   */
 
+  # Delete some Gnome apps
+  # services.gnome.core-utilities.enable = false; # delete all apps
+  environment.gnome.excludePackages = [
+    pkgs.cheese # photo booth
+    pkgs.epiphany # web browser
+    pkgs.yelp # help viewer
+    pkgs.file-roller # archive manager
+    pkgs.geary # email client
+    pkgs.seahorse # password manager 
+    pkgs.gnome-calculator
+    pkgs.gnome-calendar
+    pkgs.gnome-characters
+    pkgs.gnome-clocks
+    pkgs.gnome-contacts
+    pkgs.gnome-logs
+    pkgs.gnome-maps
+    pkgs.gnome-music
+    pkgs.gnome-weather
+    pkgs.gnome-system-monitor
+    pkgs.gnome-disk-utility
+
+    pkgs.gnome-text-editor
+    pkgs.gnome-console
+    pkgs.gnome-connections
+    pkgs.gnome-tour
+    # pkgs.gedit # text editor not in gnome right now
+    # baobab # disk usage analyzer
+    # eog # image viewer
+    # simple-scan # document scanner
+    # totem # video player
+    # gnome-photos
+    # evince # document viewer
+    # gnome-screenshot gnome-font-viewer
+  ];
+
   programs.hyprland.enable = true;
   programs.firefox.enable = true;
   # programs.chromium.enable = true;
@@ -218,6 +219,7 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
     # chromium
 
     ## Utilities
+    libreoffice
     yazi # file explorer
     sioyek # pdf viewer
     # xpdf # pdf tools (such as pdftotext) unstable ??
@@ -236,7 +238,7 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
     wl-clipboard
     tldr # better man page
     syncthing # sync file between devices
-    gnome.gnome-tweaks
+    gnome-tweaks
     kitty # terminal emulator
     lutris # game utility on linux
 
@@ -274,7 +276,7 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
     unstable.tinymist
     typstyle
     typst-live
-    typst-preview
+    # typst-preview
 
     ## Rust
     rustup
