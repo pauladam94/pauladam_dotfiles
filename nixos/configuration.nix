@@ -1,6 +1,6 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
-let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
+let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
 {
   # imports = [ ./hardware-configuration.nix ];
   # imports = [ /home/pauladam/.config/nixos/configuration.nix ];
@@ -11,7 +11,7 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
       efi.canTouchEfiVariables = true;
     };
   };
-
+  services.power-profiles-daemon.enable = true;
 
   # sheel aliases TODO
   # mkShell = {
@@ -69,6 +69,8 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
   documentation.man.enable = true;
   documentation.dev.enable = true;
 
+  # Flatpak
+  services.flatpak.enable = true;
 
 
   # Configure keymap in X11
@@ -81,6 +83,7 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
   console.keyMap = "fr";
 
   # Enable CUPS to print documents.
+  services.printing.drivers = [ pkgs.cups-brother-dcpl3550cdw ];
   services.printing.enable = true;
   services.avahi = {
     enable = true;
@@ -120,6 +123,9 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
   # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
   systemd.services."getty@tty1".enable = true;
   systemd.services."autovt@tty1".enable = true;
+
+  # Error during rebuild
+  systemd.services.NetworkManager-wait-online.enable = false;
 
   nixpkgs.config.allowUnfree = true;
   # Virtual Box
@@ -170,7 +176,7 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
     pkgs.gnome-music
     pkgs.gnome-weather
     pkgs.gnome-system-monitor
-    pkgs.gnome-disk-utility
+    # pkgs.gnome-disk-utility
 
     pkgs.gnome-text-editor
     pkgs.gnome-console
@@ -186,7 +192,7 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
     # gnome-screenshot gnome-font-viewer
   ];
 
-  programs.hyprland.enable = true;
+  # programs.hyprland.enable = true;
   programs.firefox.enable = true;
   # programs.chromium.enable = true;
   environment.variables.EDITOR = "nvim";
@@ -203,29 +209,30 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
 
   fonts.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "FiraCode" ]; })
+    newcomputermodern
   ];
-  # pkgs.mkShell {
-  #   packages = [
-  #     pkgs.ocamlPackages.graphics
-  #     pkgs.ocamlPackages.utop
-  #     pkgs.ocamlPackages.findlib
-  #   ]
-  # };
 
   environment.systemPackages = with pkgs; [
     man-pages
     man-pages-posix
+
+    stremio
+
     ## Web Browser
     # chromium
 
     ## Utilities
     libreoffice
-    yazi # file explorer
-    sioyek # pdf viewer
+    # yazi # file explorer
+    # sioyek # pdf viewer
+    btop
     # xpdf # pdf tools (such as pdftotext) unstable ??
     # gnome-multi-writer
     ## Other
     # toybox busybox
+
+    ## Helix try
+    helix
 
     ## Neovim Setup
     unstable.neovim
@@ -281,20 +288,27 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
     ## Rust
     rustup
     rust-analyzer
-    cargo
+    # cargo
 
     ## Nix
     nixd
     nixpkgs-fmt
 
     ## Coq - Ocaml
-    opam
+    # pkgs.mkShell {
+    #   packages = [
+    #     pkgs.ocamlPackages.graphics
+    #     pkgs.ocamlPackages.utop
+    #     pkgs.ocamlPackages.findlib
+    #   ]
+    # };
+    # opam
     ocaml
-    ocamlPackages.ocaml-lsp
-    ocamlPackages.ocamlformat
-    ocamlPackages.graphics
-    ocamlPackages.utop
-    ocamlPackages.findlib
+    # ocamlPackages.ocaml-lsp
+    # ocamlPackages.ocamlformat
+    # ocamlPackages.graphics
+    # ocamlPackages.utop
+    # ocamlPackages.findlib
     coq
     coqPackages.coq-lsp
 
@@ -337,5 +351,5 @@ let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
   # Or disable the firewall altogether. networking.firewall.enable = false;
   # skip_global_compinit = 1;
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.11";
+  system.stateVersion = "25.05";
 }
