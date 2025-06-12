@@ -57,12 +57,12 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
   nix.settings.auto-optimise-store = true;
   nix.gc.automatic = true;
   nix.gc.dates = "weekly";
-  nix.gc.options = "--delete-older-than +5"; 
+  nix.gc.options = "--delete-older-than +5";
 
-  # Enable the X11 windowing system.
+  # Enable the X11 windowing system
   services.xserver.enable = true;
 
-  # Enable the GNOME Desktop Environment.
+  # Enable the GNOME Desktop Environment
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.displayManager.gdm.wayland = true;
   services.xserver.desktopManager.gnome.enable = true;
@@ -78,6 +78,7 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
   documentation.dev.enable = true;
 
   # Flatpak
+  ## TODO: should automatically add flathub repo (and other repo ?)
   services.flatpak.enable = true;
 
 
@@ -239,6 +240,11 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
     # gnome-multi-writer
     ## Other
     # toybox busybox
+    tldr # better man page
+    syncthing # sync file between devices
+    gnome-tweaks
+    kitty # terminal emulator
+    # lutris # game utility on linux
 
     ## Helix try
     helix
@@ -252,11 +258,8 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
     tree-sitter
     wget
     wl-clipboard
-    tldr # better man page
-    syncthing # sync file between devices
-    gnome-tweaks
-    kitty # terminal emulator
-    lutris # game utility on linux
+
+
 
     ## Hyprland : not using hyprland anymore
     brightnessctl # utilitary to change screen brightness
@@ -320,8 +323,7 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
     # ocamlPackages.utop
     # ocamlPackages.findlib
     coq
-    # TODO : this is only available in 24.11
-    # I should grab 24.11 to always have access to this
+    # TODO : this use unstable
     unstable.coqPackages.coq-lsp
 
     ## go # create a go directory in ~
