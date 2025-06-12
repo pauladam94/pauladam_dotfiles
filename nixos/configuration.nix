@@ -53,6 +53,12 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
     LC_TIME = "fr_FR.UTF-8";
   };
 
+  # Garbage Collection Generations
+  nix.settings.auto-optimise-store = true;
+  nix.gc.automatic = true;
+  nix.gc.dates = "weekly";
+  nix.gc.options = "--delete-older-than +5"; 
+
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
@@ -60,6 +66,8 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.displayManager.gdm.wayland = true;
   services.xserver.desktopManager.gnome.enable = true;
+
+  services.desktopManager.cosmic.enable = true;
   # services.displayManager.defaultSession = "hyprland";
 
   # services.tlp.enable = true; // already have powerdaemon ? where ?
@@ -92,7 +100,7 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
   };
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -208,7 +216,8 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
   };
 
   fonts.packages = with pkgs; [
-    (nerdfonts.override { fonts = [ "FiraCode" ]; })
+    nerd-fonts.fira-code
+    # (nerdfonts.override { fonts = [ "FiraCode" ]; })
     newcomputermodern
   ];
 
@@ -249,7 +258,7 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
     kitty # terminal emulator
     lutris # game utility on linux
 
-    ## Hyprland
+    ## Hyprland : not using hyprland anymore
     brightnessctl # utilitary to change screen brightness
 
     wayland-scanner
@@ -259,13 +268,14 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
     mypy
     graphviz
     vscodium
-    jetbrains.pycharm-community-src
+    # jetbrains.pycharm-community-src
 
     ## Programming
     git
     lazygit
 
     ## C
+    ## TODO : I have to remove some of those : very SLOW
     gnumake
     valgrind
     clang
@@ -310,7 +320,9 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
     # ocamlPackages.utop
     # ocamlPackages.findlib
     coq
-    coqPackages.coq-lsp
+    # TODO : this is only available in 24.11
+    # I should grab 24.11 to always have access to this
+    unstable.coqPackages.coq-lsp
 
     ## go # create a go directory in ~
 
