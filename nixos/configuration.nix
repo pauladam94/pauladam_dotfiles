@@ -6,10 +6,15 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
   # imports = [ /home/pauladam/.config/nixos/configuration.nix ];
 
   boot = {
+    loader.grub.theme = "${pkgs.libsForQt5.breeze-grub}/grub/themes/breeze";
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
     };
+    # silent boot option
+    initrd.verbose = false;
+    consoleLogLevel = 0;
+    kernelParams = [ "quiet" "udev.log_level=3" ];
   };
   services.power-profiles-daemon.enable = true;
 
@@ -34,12 +39,8 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-  # Set your time zone.
   time.timeZone = "Europe/Paris";
-
-  # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
-
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "fr_FR.UTF-8";
     LC_IDENTIFICATION = "fr_FR.UTF-8";
@@ -68,9 +69,8 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
   services.xserver.desktopManager.gnome.enable = true;
 
   services.desktopManager.cosmic.enable = true;
-  # services.displayManager.defaultSession = "hyprland";
 
-  # services.tlp.enable = true; // already have powerdaemon ? where ?
+  # services.tlp.enable = true; // already have powerdaemon error
 
   # Documentation // does not work right now
   documentation.enable = true;
@@ -80,12 +80,23 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
   # Flatpak
   ## TODO: should automatically add flathub repo (and other repo ?)
   services.flatpak.enable = true;
+  systemd.services.flatpak-repo = {
+    wantedBy = [ "multi-user.target" ];
+    path = [ pkgs.flatpak ];
+    script = ''
+      flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+      flatpak remote-add --if-not-exists fedora oci+https://registry.fedoraproject.org
+      flatpak remote-add --if-not-exists elementaryos https://flatpak.elementary.io/repo.flatpakrepo
+    '';
+  };
+  # flatpak remote-add --if-not-exists --no-gpg-verify resolve-repo .repo
 
 
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "fr";
     variant = "azerty";
+    options = "caps:swapescape";
   };
 
   # Configure console keymap
@@ -99,6 +110,8 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
     nssmdns4 = true;
     openFirewall = true;
   };
+
+
 
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
@@ -232,7 +245,7 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
     # chromium
 
     ## Utilities
-    libreoffice
+    # libreoffice -> pas dingue le packaging : test de flathub
     # yazi # file explorer
     # sioyek # pdf viewer
     btop
@@ -323,8 +336,8 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
     # ocamlPackages.utop
     # ocamlPackages.findlib
     coq
-    # TODO : this use unstable
-    unstable.coqPackages.coq-lsp
+    # TODO : this should use unstable
+    # unstable.coqPackages.coq-lsp
 
     ## go # create a go directory in ~
 
@@ -345,7 +358,7 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
     uxn
 
     ## JS - TS
-    nodejs
+    # nodejs
     typescript
     nodePackages.typescript-language-server # deprecate change ?
   ];
