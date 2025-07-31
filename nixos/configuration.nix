@@ -5,20 +5,27 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
   # imports = [ ./hardware-configuration.nix ];
   # imports = [ /home/pauladam/.config/nixos/configuration.nix ];
 
+  # nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  ## Bootloader
+  # boot.loader.systemd-boot.enable = true;
+  # boot.loader.efi.canTouchEfiVariables = true;
+  
   boot = {
-    loader.grub.theme = "${pkgs.libsForQt5.breeze-grub}/grub/themes/breeze";
+    ## Does not do anything on boot
+    # loader.grub.theme = "${pkgs.libsForQt5.breeze-grub}/grub/themes/breeze";
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
     };
-    # silent boot option
-    initrd.verbose = false;
-    consoleLogLevel = 0;
-    kernelParams = [ "quiet" "udev.log_level=3" ];
+    ## Silent boot option
+    # initrd.verbose = false;
+    # consoleLogLevel = 0;
+    # kernelParams = [ "quiet" "udev.log_level=3" ];
   };
   services.power-profiles-daemon.enable = true;
 
-  # sheel aliases TODO
+  ## sheel aliases TODO
   # mkShell = {
   #   shellHook =
   #     ''
@@ -26,16 +33,12 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
   #     '';
   # };
 
-  # Bootloader
-  # boot.loader.systemd-boot.enable = true;
-  # boot.loader.efi.canTouchEfiVariables = true;
-
-  # Define your hostname.
+  ## Define your hostname.
   networking.hostName = "nixos"; # Enables wireless support via wpa_supplicant.
   # networking.wireless.enable = true; # Enable networking
   networking.networkmanager.enable = true;
   networking.wireless.userControlled.enable = true;
-  # Configure network proxy if necessary
+  ## Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
@@ -54,30 +57,40 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
     LC_TIME = "fr_FR.UTF-8";
   };
 
-  # Garbage Collection Generations
-  nix.settings.auto-optimise-store = true;
-  nix.gc.automatic = true;
-  nix.gc.dates = "weekly";
-  nix.gc.options = "--delete-older-than +5";
+  ## Garbage Collection Generations
+  # nix.settings.auto-optimise-store = true;
+  # nix.gc.automatic = true;
+  # nix.gc.dates = "weekly";
+  # nix.gc.options = "--delete-older-than +5";
 
-  # Enable the X11 windowing system
+  ## Enable the X11 windowing system
   services.xserver.enable = true;
 
-  # Enable the GNOME Desktop Environment
+  ## GNOME Desktop Environment
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.displayManager.gdm.wayland = true;
   services.xserver.desktopManager.gnome.enable = true;
 
-  services.desktopManager.cosmic.enable = true;
+  ## Cosmic Desktop Manager
+  # services.desktopManager.cosmic.enable = true;
 
   # services.tlp.enable = true; // already have powerdaemon error
 
-  # Documentation // does not work right now
+  ## Documentation // does not work right now
   documentation.enable = true;
   documentation.man.enable = true;
   documentation.dev.enable = true;
 
-  # Flatpak
+  ## Docker
+  virtualisation.docker.enable = true;
+
+  ## AppImage
+  programs.appimage = {
+    enable = true;
+    binfmt = true;
+  };
+
+  ## Flatpak
   ## TODO: should automatically add flathub repo (and other repo ?)
   services.flatpak.enable = true;
   systemd.services.flatpak-repo = {
@@ -91,18 +104,17 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
   };
   # flatpak remote-add --if-not-exists --no-gpg-verify resolve-repo .repo
 
-
-  # Configure keymap in X11
+  ## Configure keymap in X11
   services.xserver.xkb = {
     layout = "fr";
     variant = "azerty";
     options = "caps:swapescape";
   };
 
-  # Configure console keymap
+  ## Configure console keymap
   console.keyMap = "fr";
 
-  # Enable CUPS to print documents.
+  ## Enable CUPS to print documents.
   services.printing.drivers = [ pkgs.cups-brother-dcpl3550cdw ];
   services.printing.enable = true;
   services.avahi = {
@@ -111,9 +123,7 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
     openFirewall = true;
   };
 
-
-
-  # Enable sound with pipewire.
+  ## Enable sound with pipewire.
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -129,58 +139,58 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
 
   # Enable touchpad support (enabled default in most desktopManager). services.xserver.libinput.enable = true;
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  ## Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.pauladam = {
     isNormalUser = true;
     description = "pauladam";
     extraGroups = [ "networkmanager" "wheel" ];
-    # packages = with pkgs; [
-    # ];
+    # packages = with pkgs; [ ];
   };
 
-  # Enable automatic login for the user.
+  ## Automatic login for the user.
   services.displayManager.autoLogin.enable = true;
   services.displayManager.autoLogin.user = "pauladam";
 
-  # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
+  ## Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
   systemd.services."getty@tty1".enable = true;
   systemd.services."autovt@tty1".enable = true;
 
-  # Error during rebuild
+  ## Fix error during nixos-rebuild
   systemd.services.NetworkManager-wait-online.enable = false;
 
+  ## Unfree packages
   nixpkgs.config.allowUnfree = true;
-  # Virtual Box
+
+  ## Virtual Box
   virtualisation.virtualbox.host.enable = true;
   # virtualisation.virtualbox.host.enableExtensionPack = true;
   users.extraGroups.vboxusers.members = [ "pauladam" ];
 
-  # Zsh
-  /*
-    users.defaultUserShell = pkgs.zsh;
-    programs.zsh = {
-    enable = true;
-    enableCompletion = false; # test
-    autosuggestions.enable = true; # before true
-    zsh-autoenv.enable = true;
-    syntaxHighlighting.enable = true;
-    ohMyZsh = {
-      enable = true;
-      theme = "robbyrussell";
-      plugins = [
-        "git"
-        "npm"
-        "history"
-        "node"
-        "rust"
-        # "deno"
-      ];
-    };
-    };
-  */
+  ## Zsh
+  # users.defaultUserShell = pkgs.zsh;
+  # programs.zsh = {
+  # enable = true;
+  # enableCompletion = false; # test
+  # autosuggestions.enable = true; # before true
+  # zsh-autoenv.enable = true;
+  # syntaxHighlighting.enable = true;
+  # ohMyZsh = {
+  #   enable = true;
+  #   theme = "robbyrussell";
+  #   plugins = [
+  #     "git"
+  #     "npm"
+  #     "history"
+  #     "node"
+  #     "rust"
+  #     # "deno"
+  #   ];
+  # };
+  # };
 
-  # Delete some Gnome apps
-  # services.gnome.core-utilities.enable = false; # delete all apps
+  ## Delete Gnome Apps
+  ## Delete All Apps
+  # services.gnome.core-utilities.enable = false;
   environment.gnome.excludePackages = [
     pkgs.cheese # photo booth
     pkgs.epiphany # web browser
@@ -214,21 +224,25 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
     # gnome-screenshot gnome-font-viewer
   ];
 
-  # programs.hyprland.enable = true;
   programs.firefox.enable = true;
-  # programs.chromium.enable = true;
   environment.variables.EDITOR = "nvim";
   # programs.neovim = {
   #  enable = true;
   #  defaultEditor = true;
   # };
+
+  ## Steam
   programs.steam = {
     enable = true;
-    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
+    ## Open ports in the firewall for Steam Remote Play
+    remotePlay.openFirewall = true;
+    ## Open ports in the firewall for Source Dedicated Server
+    dedicatedServer.openFirewall = true;
+    ## Open ports in the firewall for Steam Local Network Game Transfers
+    localNetworkGameTransfers.openFirewall = true;
   };
 
+  ## Fonts
   fonts.packages = with pkgs; [
     nerd-fonts.fira-code
     # (nerdfonts.override { fonts = [ "FiraCode" ]; })
@@ -272,8 +286,6 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
     wget
     wl-clipboard
 
-
-
     ## Hyprland : not using hyprland anymore
     brightnessctl # utilitary to change screen brightness
 
@@ -292,14 +304,14 @@ let unstable = import <nixos-unstable> { config.allowUnfree = true; }; in
 
     ## C
     ## TODO : I have to remove some of those : very SLOW
-    gnumake
+    # gnumake # not useful
     valgrind
     clang
     clang-tools
     gcc
     lldb
     libgcc
-    raylib
+    # raylib # not system wise
 
     ## Hare
     hare
