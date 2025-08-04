@@ -1,0 +1,6 @@
+theme = "adwaita-light"
+
+[editor]
+auto-save.after-delay.enable = true
+soft-wrap.enable = true
+
